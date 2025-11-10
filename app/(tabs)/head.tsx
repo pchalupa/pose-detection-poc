@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-export default function TabOneScreen() {
+export default function HeadScreen() {
   return <View style={styles.container}></View>;
 }
 
