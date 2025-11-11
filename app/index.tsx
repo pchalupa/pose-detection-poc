@@ -1,11 +1,17 @@
 import { StyleSheet, View } from 'react-native';
-import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraFormat,
+  useCameraPermission,
+} from 'react-native-vision-camera';
 import { Button } from '~/components/Button';
 import { frameProcessor } from '~/frame-processor';
 
 export default function TabOneScreen() {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
+  const format = useCameraFormat(device, [{ photoResolution: { width: 2048, height: 2048 } }]);
 
   return (
     <View style={styles.container}>
@@ -15,6 +21,8 @@ export default function TabOneScreen() {
           isActive
           style={StyleSheet.absoluteFillObject}
           frameProcessor={frameProcessor}
+          fps={30}
+          format={format}
           enableFpsGraph
         />
       ) : (
