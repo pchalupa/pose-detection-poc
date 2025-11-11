@@ -11,5 +11,5 @@ const plugin = VisionCameraProxy.initFrameProcessorPlugin('detectPose', {});
 export function detectPose(frame: Frame): PoseLandmark[] {
   'worklet';
 
-  return plugin?.call(frame);
+  return plugin?.call(frame) ?? [];
 }

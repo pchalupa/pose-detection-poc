@@ -1,9 +1,16 @@
-#if __has_include(<VisionCamera/FrameProcessorPlugin.h>)
+#import <Foundation/Foundation.h>
 #import <VisionCamera/FrameProcessorPlugin.h>
 #import <VisionCamera/FrameProcessorPluginRegistry.h>
-
 #import "VisionCameraPoseDetectionPlugin-Swift.h"
 
-VISION_EXPORT_SWIFT_FRAME_PROCESSOR(PoseDetectionPlugin, detectPose)
+@interface PoseDetectionPlugin (FrameProcessorPluginLoader)
+@end
 
-#endif
+@implementation PoseDetectionPlugin (FrameProcessorPluginLoader)
++ (void) load {
+  [FrameProcessorPluginRegistry addFrameProcessorPlugin:@"detectPose"
+    withInitializer:^FrameProcessorPlugin*(VisionCameraProxyHolder* proxy, NSDictionary* options) {
+    return [[PoseDetectionPlugin alloc] initWithProxy:proxy withOptions:options];
+  }];
+}
+@end

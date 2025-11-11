@@ -1,8 +1,7 @@
-import { Skia } from '@shopify/react-native-skia';
-import { createSkiaFrameProcessor, Orientation } from 'react-native-vision-camera';
+import { Skia, type SkImage } from '@shopify/react-native-skia';
+import { createSkiaFrameProcessor, type Orientation } from 'react-native-vision-camera';
 import { Worklets } from 'react-native-worklets-core';
 import { detectPose } from 'vision-camera-pose-detection-plugin';
-
 const surfaceHolder = Worklets.createSharedValue<SurfaceCache>({});
 const offscreenTextures = Worklets.createSharedValue<SkImage[]>([]);
 const previewOrientation = Worklets.createSharedValue<Orientation>('portrait');

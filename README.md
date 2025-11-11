@@ -12,6 +12,7 @@ This is a proof of concept project for pose detection using React Native and Vis
 - RNSkia version 2.2.2+ unsupported by vision camera
 - MLKit Pose Detection adds ~30MB to the app size
 - High RAM usage on iOS (up to 1.5GB) leads to crash. Setting format and fps helps a bit but still not usable for long sessions.
+- VISION_EXPORT_SWIFT_FRAME_PROCESSOR does not register the frame processor on iOS.
 
 ### Runtime Comparison
 
