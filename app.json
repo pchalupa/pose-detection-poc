@@ -18,7 +18,8 @@
       "bundleIdentifier": "com.strv.pose-detection-poc",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera"
-      }
+      },
+      "appleTeamId": "EAVQTDVRT7"
     },
     "android": {
       "adaptiveIcon": {
