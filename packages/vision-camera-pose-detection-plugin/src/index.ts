@@ -1,4 +1,4 @@
-import { Frame, VisionCameraProxy } from 'react-native-vision-camera';
+import { type Frame, VisionCameraProxy } from 'react-native-vision-camera';
 
 export interface PoseLandmark {
   type: string;
