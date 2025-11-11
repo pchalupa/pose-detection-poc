@@ -16,17 +16,16 @@
   ],
   "author": "",
   "license": "MIT",
-  "packageManager": "pnpm@10.21.0",
-  "peerDependencies": {
-    "react": ">=19.0.0",
-    "react-native": ">=0.76.0",
-    "react-native-vision-camera": ">=4.0.0",
-    "react-native-worklets-core": ">=1.6.0"
-  },
   "devDependencies": {
     "@types/react": "~19.1.0",
     "typescript": "~5.9.2",
     "eslint": "^9.39.1",
     "eslint-config-expo": "~10.0.0"
-  }
+  },
+  "peerDependencies": {
+    "react-native": ">=0.76.0",
+    "react-native-vision-camera": ">=4.0.0",
+    "react-native-worklets-core": ">=1.6.0"
+  },
+  "packageManager": "pnpm@10.21.0"
 }
