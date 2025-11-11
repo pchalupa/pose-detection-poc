@@ -1,15 +1,15 @@
 import { type Frame, VisionCameraProxy } from 'react-native-vision-camera';
 
-export interface PoseLandmark {
+export type PoseLandmark = {
   type: string;
   x: number;
   y: number;
-}
+};
 
-const plugin = VisionCameraProxy.initFrameProcessorPlugin('detectPose', {});
+const plugin = VisionCameraProxy.initFrameProcessorPlugin('getPoseLandmarks', {});
 
-export function detectPose(frame: Frame): PoseLandmark[] {
+export function getPoseLandmarks(frame: Frame): PoseLandmark[] {
   'worklet';
 
-  return plugin?.call(frame) ?? [];
+  return (plugin?.call(frame) ?? []) as unknown as PoseLandmark[];
 }
