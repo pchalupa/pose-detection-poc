@@ -2,8 +2,8 @@ import VisionCamera
 import MLKitPoseDetection
 import MLKitVision
 
-@objc(PoseDetectionPlugin)
-public class PoseDetectionPlugin: FrameProcessorPlugin {
+@objc(PoseLandmarksPlugin)
+public class PoseLandmarksPlugin: FrameProcessorPlugin {
     private lazy var poseDetector = {
         let options = PoseDetectorOptions()
         options.detectorMode = .stream

@@ -19,7 +19,7 @@ def safeExtGet(prop, fallback) {
 
 android {
   compileSdk safeExtGet('compileSdkVersion', 36)
-  namespace "com.visioncamera.posedetection"
+  namespace "com.visioncamera.poselandmarksplugin"
 
   defaultConfig {
     minSdk safeExtGet('minSdkVersion', 26)
@@ -56,9 +56,8 @@ repositories {
 
 dependencies {
   implementation "com.facebook.react:react-android:+"
+  implementation "com.google.mlkit:pose-detection:18.0.0-beta5"
   api project(":react-native-vision-camera")
 
-  // ML Kit Pose Detection
-  implementation 'com.google.mlkit:pose-detection:18.0.0-beta5'
-  implementation 'com.google.mlkit:pose-detection-accurate:18.0.0-beta5'
+
 }

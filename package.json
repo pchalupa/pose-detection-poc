@@ -33,7 +33,7 @@
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.5.1",
     "react-native-worklets-core": "1.6.2",
-    "vision-camera-pose-detection-plugin": "workspace:*"
+    "vision-camera-pose-landmarks-plugin": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",

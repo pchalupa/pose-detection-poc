@@ -1,23 +1,22 @@
-package com.visioncamera.posedetection
+package com.visioncamera.poselandmarksplugin
 
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.PoseLandmark
-import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions
+import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.mrousavy.camera.core.types.Orientation
 import com.mrousavy.camera.frameprocessors.Frame
 import com.mrousavy.camera.frameprocessors.FrameProcessorPlugin
 import com.mrousavy.camera.frameprocessors.VisionCameraProxy
 
-class PoseDetectionPlugin(proxy: VisionCameraProxy, options: Map<String, Any>?): FrameProcessorPlugin() {
-
+class PoseLandmarksPlugin(proxy: VisionCameraProxy, options: Map<String, Any>?): FrameProcessorPlugin() {
   private val poseDetector: PoseDetector
 
   init {
-    val detectorOptions = AccuratePoseDetectorOptions.Builder()
-      .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE)
+    val detectorOptions = PoseDetectorOptions.Builder()
+      .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
       .build()
 
     poseDetector = PoseDetection.getClient(detectorOptions)

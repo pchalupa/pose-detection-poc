@@ -2,6 +2,6 @@
   <application>
     <meta-data
       android:name="com.google.mlkit.vision.DEPENDENCIES"
-      android:value="pose_detection,pose_detection_accurate" />
+      android:value="pose_detection" />
   </application>
 </manifest>

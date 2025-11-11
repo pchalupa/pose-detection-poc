@@ -1,16 +1,16 @@
 #import <Foundation/Foundation.h>
 #import <VisionCamera/FrameProcessorPlugin.h>
 #import <VisionCamera/FrameProcessorPluginRegistry.h>
-#import "VisionCameraPoseDetectionPlugin-Swift.h"
+#import "VisionCameraPoseLandmarksPlugin-Swift.h"
 
-@interface PoseDetectionPlugin (FrameProcessorPluginLoader)
+@interface PoseLandmarksPlugin (FrameProcessorPluginLoader)
 @end
 
-@implementation PoseDetectionPlugin (FrameProcessorPluginLoader)
+@implementation PoseLandmarksPlugin (FrameProcessorPluginLoader)
 + (void) load {
   [FrameProcessorPluginRegistry addFrameProcessorPlugin:@"getPoseLandmarks"
     withInitializer:^FrameProcessorPlugin*(VisionCameraProxyHolder* proxy, NSDictionary* options) {
-    return [[PoseDetectionPlugin alloc] initWithProxy:proxy withOptions:options];
+    return [[PoseLandmarksPlugin alloc] initWithProxy:proxy withOptions:options];
   }];
 }
 @end

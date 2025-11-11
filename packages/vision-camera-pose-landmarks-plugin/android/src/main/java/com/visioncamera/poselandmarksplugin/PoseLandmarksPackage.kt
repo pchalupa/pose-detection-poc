@@ -1,17 +1,18 @@
-package com.visioncamera.posedetection
+package com.visioncamera.poselandmarksplugin
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
 import com.mrousavy.camera.frameprocessors.FrameProcessorPluginRegistry
+import com.visioncamera.poselandmarksplugin.PoseLandmarksPlugin
 
-class PoseDetectionPackage : ReactPackage {
+class PoseLandmarksPackage : ReactPackage {
 
   companion object {
     init {
-      FrameProcessorPluginRegistry.addFrameProcessorPlugin(PoseDetectionPlugin.NAME) { proxy, options ->
-        PoseDetectionPlugin(proxy, options)
+      FrameProcessorPluginRegistry.addFrameProcessorPlugin(PoseLandmarksPlugin.NAME) { proxy, options ->
+          PoseLandmarksPlugin(proxy, options)
       }
     }
   }
