@@ -1,13 +1,33 @@
 import { StyleSheet, View } from 'react-native';
+import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
+import { Button } from '~/components/Button';
+import { frameProcessor } from '~/frame-processor';
 
 export default function TabOneScreen() {
-  return <View style={styles.container}></View>;
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const device = useCameraDevice('back');
+
+  return (
+    <View style={styles.container}>
+      {hasPermission && device ? (
+        <Camera
+          device={device}
+          isActive
+          style={StyleSheet.absoluteFillObject}
+          frameProcessor={frameProcessor}
+          enableFpsGraph
+        />
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Button text="Request Camera Permission" onPress={requestPermission} />
+        </View>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
