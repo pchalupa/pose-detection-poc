@@ -9,3 +9,6 @@ This is a proof of concept project for pose detection using React Native and Vis
 - Vision Camera and Frame Processors are the way to go!
 - Problem with black screen on android while using skia.
 - Required minimum SDK version 26, set using build properties
+- RNSkia version 2.2.2+ unsupported by vision camera
+- Black previw on android is still present
+- MLKit Pose Detection adds ~30MB to the app size
