@@ -7,6 +7,19 @@ import {
 import { Worklets } from 'react-native-worklets-core';
 import { getPoseLandmarks } from 'vision-camera-pose-landmarks-plugin';
 
+function drawLandmarks(frame: DrawableFrame, landmarks: { type: string; x: number; y: number }[]) {
+  'worklet';
+
+  for (const point of landmarks) {
+    const { x, y } = point;
+
+    const paint = Skia.Paint();
+    paint.setColor(Skia.Color('red'));
+
+    frame.drawCircle(x, y, 5, paint);
+  }
+}
+
 // SurfaceCache type is private
 const surfaceHolder = Worklets.createSharedValue<any>({});
 const offscreenTextures = Worklets.createSharedValue<SkImage[]>([]);
@@ -25,16 +38,3 @@ export const frameProcessor = createSkiaFrameProcessor(
   offscreenTextures,
   previewOrientation
 );
-
-function drawLandmarks(frame: DrawableFrame, landmarks: { type: string; x: number; y: number }[]) {
-  'worklet';
-
-  for (const point of landmarks) {
-    const { x, y } = point;
-
-    const paint = Skia.Paint();
-    paint.setColor(Skia.Color('red'));
-
-    frame.drawCircle(x, y, 5, paint);
-  }
-}
