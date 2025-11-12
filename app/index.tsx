@@ -23,7 +23,9 @@ export default function TabOneScreen() {
           frameProcessor={frameProcessor}
           fps={30}
           format={format}
+          pixelFormat="rgb"
           enableFpsGraph
+          videoStabilizationMode="off"
         />
       ) : (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
