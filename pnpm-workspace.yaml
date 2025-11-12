@@ -1,8 +1,11 @@
 packages:
   - 'packages/*'
 
-ignoredBuiltDependencies:
-  - unrs-resolver
+catalog:
+  typescript: '~5.9.2'
+  eslint: ^9.39.1
+  eslint-config-expo: '^10.0.0'
+  prettier: ^3.6.2
 
 onlyBuiltDependencies:
   - '@shopify/react-native-skia'

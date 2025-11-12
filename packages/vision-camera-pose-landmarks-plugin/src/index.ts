@@ -13,6 +13,7 @@ export type PoseLandmark = {
   type: PoseLandmarkType;
   x: number;
   y: number;
+  z: number;
 };
 
 export enum PoseLandmarkType {
