@@ -12,6 +12,7 @@ This is a proof of concept project for pose detection using React Native and Vis
 - MLKit Pose Detection adds ~30MB to the app size
 - High RAM usage on iOS (up to 1.5GB) leads to crash. Setting format and fps helps a bit but still not usable for long sessions.
 - VISION_EXPORT_SWIFT_FRAME_PROCESSOR does not register the frame processor on iOS.
+- Pose detection using angle heuristic https://developers.google.com/ml-kit/vision/pose-detection/classifying-poses#recognizing_a_yoga_pose_with_angle_heuristics
 
 ### Runtime Comparison
 
