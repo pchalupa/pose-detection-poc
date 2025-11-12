@@ -1,0 +1,14 @@
+name: Code Quality Check
+on: push
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - run: pnpm install
+      - name: Run ESLint
+        run: pnpm lint

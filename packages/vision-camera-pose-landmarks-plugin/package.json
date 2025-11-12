@@ -1,6 +1,7 @@
 {
   "name": "vision-camera-pose-landmarks-plugin",
   "version": "1.0.0",
+  "type": "module",
   "description": "VisionCamera Frame Processor Plugin for Pose Landmarks",
   "homepage": "https://github.com/pchalupa/pose-detection-poc",
   "main": "src/index.ts",
