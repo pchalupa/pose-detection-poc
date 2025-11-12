@@ -1,5 +1,20 @@
 import { type Frame, VisionCameraProxy } from 'react-native-vision-camera';
 
+const plugin = VisionCameraProxy.initFrameProcessorPlugin('getPoseLandmarks', {});
+
+export function getPoseLandmarks(frame: Frame): PoseLandmark[] {
+  'worklet';
+
+  // @ts-expect-error
+  return plugin?.call(frame) ?? [];
+}
+
+export type PoseLandmark = {
+  type: PoseLandmarkType;
+  x: number;
+  y: number;
+};
+
 export enum PoseLandmarkType {
   NOSE = 'NOSE',
   LEFT_EYE_INNER = 'LEFT_EYE_INNER',
@@ -35,18 +50,4 @@ export enum PoseLandmarkType {
   LEFT_FOOT_INDEX = 'LEFT_FOOT_INDEX',
   RIGHT_FOOT_INDEX = 'RIGHT_FOOT_INDEX',
   UNKNOWN = 'UNKNOWN',
-}
-
-export type PoseLandmark = {
-  type: PoseLandmarkType;
-  x: number;
-  y: number;
-};
-
-const plugin = VisionCameraProxy.initFrameProcessorPlugin('getPoseLandmarks', {});
-
-export function getPoseLandmarks(frame: Frame): PoseLandmark[] {
-  'worklet';
-
-  return (plugin?.call(frame) ?? []) as unknown as PoseLandmark[];
 }
