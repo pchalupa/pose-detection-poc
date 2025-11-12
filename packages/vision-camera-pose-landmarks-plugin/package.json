@@ -6,6 +6,17 @@
   "homepage": "https://github.com/pchalupa/pose-detection-poc",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "files": [
+    "src",
+    "android",
+    "ios",
+    "assets",
+    "*.podspec",
+    "LICENSE",
+    "!ios/build",
+    "!android/build",
+    "!**/.*"
+  ],
   "scripts": {
     "lint": "eslint"
   },
