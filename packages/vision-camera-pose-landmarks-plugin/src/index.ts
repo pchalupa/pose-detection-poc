@@ -2,11 +2,22 @@ import { type Frame, VisionCameraProxy } from 'react-native-vision-camera';
 
 const plugin = VisionCameraProxy.initFrameProcessorPlugin('getPoseLandmarks', {});
 
+/**
+ * Detects human pose landmarks in a camera frame using MediaPipe.
+ *
+ * @example
+ * ```ts
+ * const frameProcessor = useSkiaFrameProcessor((frame) => {
+ *   'worklet';
+ *   const landmarks = getPoseLandmarks(frame);
+ *   // Process landmarks...
+ * }, []);
+ * ```
+ */
 export function getPoseLandmarks(frame: Frame): PoseLandmark[] {
   'worklet';
 
-  // @ts-expect-error
-  return plugin?.call(frame) ?? [];
+  return (plugin?.call(frame) as unknown as PoseLandmark[]) ?? [];
 }
 
 export type PoseLandmark = {

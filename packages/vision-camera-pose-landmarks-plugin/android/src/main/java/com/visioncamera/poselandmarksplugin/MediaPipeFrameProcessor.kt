@@ -29,7 +29,7 @@ class MediaPipeFrameProcessor(private val context: Context) {
     fun process(frame: Frame): List<Map<String, Any>> {
         try {
             val mpImage = MediaImageBuilder(frame.image).build()
-            val result = poseLandmarker?.detectForVideo(mpImage, frame.timestamp / 1000)
+            val result = poseLandmarker?.detectForVideo(mpImage, frame.timestamp)
             val firstPose = result?.landmarks()?.first()
             val landmarks = firstPose?.mapIndexed { index, landmark ->
                 mapOf(
