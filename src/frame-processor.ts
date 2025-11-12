@@ -88,7 +88,6 @@ function drawLandmarks(frame: DrawableFrame, landmarks: PoseLandmark[]) {
       );
   }
 
-  // console.log('Drawing landmarks:', landmarks);
   for (const landmark of landmarks) {
     frame.drawCircle(
       landmark.x * frame.width,

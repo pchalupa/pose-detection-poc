@@ -11,7 +11,7 @@ import { frameProcessor } from '~/frame-processor';
 export default function TabOneScreen() {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
-  const format = useCameraFormat(device, [{ photoResolution: { width: 2048, height: 2048 } }]);
+  const format = useCameraFormat(device, [{ videoResolution: { width: 1920, height: 1080 } }]);
 
   return (
     <View style={styles.container}>
