@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => ".git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
-  s.resources = "ios/*.task"
+  s.resources = "assets/*.task"
 
   s.dependency "VisionCamera"
   s.dependency "MediaPipeTasksVision"
