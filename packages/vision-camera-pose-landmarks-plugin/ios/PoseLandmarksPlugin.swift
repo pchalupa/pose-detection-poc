@@ -1,11 +1,9 @@
-import MLKitPoseDetection
-import MLKitVision
 import VisionCamera
 
 @objc(PoseLandmarksPlugin)
 public class PoseLandmarksPlugin: FrameProcessorPlugin {
-    private lazy var mlKitFrameProcessor = {
-        return MLKitFrameProcessor()
+    private lazy var mediaPipeFrameProcessor = {
+        return MediaPipeFrameProcessor()
     }()
 
     public override init(
@@ -19,6 +17,6 @@ public class PoseLandmarksPlugin: FrameProcessorPlugin {
         _ frame: Frame,
         withArguments arguments: [AnyHashable: Any]?
     ) -> Any {
-        return mlKitFrameProcessor.process(frame)
+        return mediaPipeFrameProcessor.process(frame)
     }
 }

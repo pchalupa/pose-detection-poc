@@ -14,9 +14,10 @@ Pod::Spec.new do |s|
   s.source       = { :git => ".git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
+  s.resources = "ios/*.task"
 
   s.dependency "VisionCamera"
-  s.dependency "GoogleMLKit/PoseDetection"
+  s.dependency "MediaPipeTasksVision"
 
   install_modules_dependencies(s)
 end
