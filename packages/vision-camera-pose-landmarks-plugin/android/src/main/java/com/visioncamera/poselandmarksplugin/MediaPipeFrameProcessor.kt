@@ -51,53 +51,12 @@ class MediaPipeFrameProcessor(private val context: Context) {
                     "y" to landmark.y().toDouble(),
                     "z" to landmark.z().toDouble(),
                     "visibility" to (landmark.visibility().orElse(0.0f).toDouble()),
-                    "type" to normalizeLandmarkType(index)
+                    "type" to index
                 )
             }
         } catch (e: Exception) {
             println("MediaPipe: Error processing frame: ${e.message}")
             return emptyList()
-        }
-    }
-
-
-
-    private fun normalizeLandmarkType(index: Int): String {
-        return when (index) {
-            0 -> "NOSE"
-            1 -> "LEFT_EYE_INNER"
-            2 -> "LEFT_EYE"
-            3 -> "LEFT_EYE_OUTER"
-            4 -> "RIGHT_EYE_INNER"
-            5 -> "RIGHT_EYE"
-            6 -> "RIGHT_EYE_OUTER"
-            7 -> "LEFT_EAR"
-            8 -> "RIGHT_EAR"
-            9 -> "LEFT_MOUTH"
-            10 -> "RIGHT_MOUTH"
-            11 -> "LEFT_SHOULDER"
-            12 -> "RIGHT_SHOULDER"
-            13 -> "LEFT_ELBOW"
-            14 -> "RIGHT_ELBOW"
-            15 -> "LEFT_WRIST"
-            16 -> "RIGHT_WRIST"
-            17 -> "LEFT_PINKY"
-            18 -> "RIGHT_PINKY"
-            19 -> "LEFT_INDEX"
-            20 -> "RIGHT_INDEX"
-            21 -> "LEFT_THUMB"
-            22 -> "RIGHT_THUMB"
-            23 -> "LEFT_HIP"
-            24 -> "RIGHT_HIP"
-            25 -> "LEFT_KNEE"
-            26 -> "RIGHT_KNEE"
-            27 -> "LEFT_ANKLE"
-            28 -> "RIGHT_ANKLE"
-            29 -> "LEFT_HEEL"
-            30 -> "RIGHT_HEEL"
-            31 -> "LEFT_FOOT_INDEX"
-            32 -> "RIGHT_FOOT_INDEX"
-            else -> "UNKNOWN"
         }
     }
 }
