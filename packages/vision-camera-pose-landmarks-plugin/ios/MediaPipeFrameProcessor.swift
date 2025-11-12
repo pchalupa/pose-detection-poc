@@ -49,7 +49,6 @@ final class MediaPipeFrameProcessor {
                     "x": landmark.x,
                     "y": landmark.y,
                     "z": landmark.z,
-                    "visibility": landmark.visibility?.floatValue ?? 0.0,
                     "type": index,
                 ]
             }

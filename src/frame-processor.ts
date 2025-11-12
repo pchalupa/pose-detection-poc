@@ -79,11 +79,23 @@ function drawLandmarks(frame: DrawableFrame, landmarks: PoseLandmark[]) {
     const endPoint = landmarkMap.get(end);
 
     if (startPoint && endPoint)
-      frame.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, line);
+      frame.drawLine(
+        startPoint.x * frame.width,
+        startPoint.y * frame.height,
+        endPoint.x * frame.width,
+        endPoint.y * frame.height,
+        line
+      );
   }
 
+  // console.log('Drawing landmarks:', landmarks);
   for (const landmark of landmarks) {
-    frame.drawCircle(landmark.x, landmark.y, 3, point);
+    frame.drawCircle(
+      landmark.x * frame.width,
+      landmark.y * frame.height,
+      15 * landmark.z * -1,
+      point
+    );
   }
 }
 

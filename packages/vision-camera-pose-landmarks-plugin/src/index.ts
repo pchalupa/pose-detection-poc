@@ -11,11 +11,15 @@ export function getPoseLandmarks(frame: Frame): PoseLandmark[] {
 
 export type PoseLandmark = {
   type: PoseLandmarkType;
-  x: number;
-  y: number;
-  z: number;
+  x: NormalizedCoordinate;
+  y: NormalizedCoordinate;
+  z: NormalizedCoordinate;
 };
 
+/** Normalized coordinate value in the range [0, 1]. */
+type NormalizedCoordinate = number;
+
+/** Types of pose landmarks detected by the pose detection model. */
 export enum PoseLandmarkType {
   NOSE,
   LEFT_EYE_INNER,
