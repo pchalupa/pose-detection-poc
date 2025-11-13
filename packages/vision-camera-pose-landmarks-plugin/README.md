@@ -21,11 +21,13 @@ npm i vision-camera-pose-landmarks-plugin
 ## How To Use
 
 ```ts
+const { detectPoseLandmarks } = usePoseLandmarksPlugin();
+
 const frameProcessor = useSkiaFrameProcessor((frame) => {
   'worklet';
   frame.render();
 
-  const landmarks = getPoseLandmarks(frame);
+  const landmarks = detectPoseLandmarks(frame);
   const point = Skia.Paint();
 
   point.setColor(Skia.Color('blue'));

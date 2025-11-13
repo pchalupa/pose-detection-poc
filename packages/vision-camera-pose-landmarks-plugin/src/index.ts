@@ -1,23 +1,39 @@
+import { useMemo } from 'react';
 import { type Frame, VisionCameraProxy } from 'react-native-vision-camera';
 
-const plugin = VisionCameraProxy.initFrameProcessorPlugin('getPoseLandmarks', {});
+export function createPoseLandmarksPlugin() {
+  const poseLandmarksPlugin = VisionCameraProxy.initFrameProcessorPlugin('detectPoseLandmarks', {});
+
+  if (poseLandmarksPlugin == null)
+    throw new Error(
+      'Cannot find vision-camera-pose-landmarks-plugin! Did you install the native dependency properly?'
+    );
+
+  return {
+    /**
+     * Detects human pose landmarks in a camera frame using MediaPipe.
+     *
+     * @example
+     * ```ts
+     * const frameProcessor = useSkiaFrameProcessor((frame) => {
+     *   'worklet';
+     *   const landmarks = detectPoseLandmarks(frame);
+     *   // Process landmarks...
+     * }, []);
+     * ```
+     */
+    detectPoseLandmarks: (frame: Frame): PoseLandmark[] => {
+      'worklet';
+      return (poseLandmarksPlugin.call(frame) as unknown as PoseLandmark[]) ?? [];
+    },
+  };
+}
 
 /**
- * Detects human pose landmarks in a camera frame using MediaPipe.
- *
- * @example
- * ```ts
- * const frameProcessor = useSkiaFrameProcessor((frame) => {
- *   'worklet';
- *   const landmarks = getPoseLandmarks(frame);
- *   // Process landmarks...
- * }, []);
- * ```
+ * Use an instance of the pose landmarks plugin.
  */
-export function getPoseLandmarks(frame: Frame): PoseLandmark[] {
-  'worklet';
-
-  return (plugin?.call(frame) as unknown as PoseLandmark[]) ?? [];
+export function usePoseLandmarksPlugin() {
+  return useMemo(() => createPoseLandmarksPlugin(), []);
 }
 
 export type PoseLandmark = {

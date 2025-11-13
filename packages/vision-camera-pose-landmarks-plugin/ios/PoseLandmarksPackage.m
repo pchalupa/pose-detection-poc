@@ -8,7 +8,7 @@
 
 @implementation PoseLandmarksPlugin (FrameProcessorPluginLoader)
 + (void) load {
-  [FrameProcessorPluginRegistry addFrameProcessorPlugin:@"getPoseLandmarks"
+  [FrameProcessorPluginRegistry addFrameProcessorPlugin:@"detectPoseLandmarks"
     withInitializer:^FrameProcessorPlugin*(VisionCameraProxyHolder* proxy, NSDictionary* options) {
     return [[PoseLandmarksPlugin alloc] initWithProxy:proxy withOptions:options];
   }];

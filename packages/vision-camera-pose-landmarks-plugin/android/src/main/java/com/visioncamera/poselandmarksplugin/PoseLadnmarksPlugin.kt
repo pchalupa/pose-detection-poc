@@ -12,6 +12,6 @@ class PoseLandmarksPlugin(proxy: VisionCameraProxy, options: Map<String, Any>?):
   }
 
   companion object {
-    const val NAME = "getPoseLandmarks"
+    const val NAME = "detectPoseLandmarks"
   }
 }
