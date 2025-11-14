@@ -1,9 +1,20 @@
 {
   "name": "vision-camera-pose-landmarks-plugin",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "VisionCamera Frame Processor Plugin for Pose Landmarks",
-  "homepage": "https://github.com/pchalupa/pose-detection-poc",
+  "bugs": {
+    "url": "https://github.com/pchalupa/expo-alternate-app-icons/issues"
+  },
+  "author": "pchalupa <chalupa.petr93@gmail.com> (https://github.com/pchalupa)",
+  "license": "MIT",
+  "keywords": [
+    "react-native",
+    "vision-camera",
+    "pose-detection",
+    "media-pipe"
+  ],
+  "homepage": "https://github.com/pchalupa/pose-detection-poc/tree/main/packages/vision-camera-pose-landmarks-plugin#readme",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "files": [
@@ -20,14 +31,6 @@
   "scripts": {
     "lint": "eslint"
   },
-  "keywords": [
-    "react-native",
-    "vision-camera",
-    "pose-detection",
-    "ml-kit"
-  ],
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "eslint": "catalog:",
     "eslint-config-expo": "catalog:",

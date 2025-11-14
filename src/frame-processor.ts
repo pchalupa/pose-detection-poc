@@ -1,15 +1,5 @@
-import { Skia, type SkImage } from '@shopify/react-native-skia';
-import {
-  createSkiaFrameProcessor,
-  DrawableFrame,
-  type Orientation,
-} from 'react-native-vision-camera';
-import { Worklets } from 'react-native-worklets-core';
-import {
-  getPoseLandmarks,
-  PoseLandmarkType,
-  type PoseLandmark,
-} from 'vision-camera-pose-landmarks-plugin';
+import { SkCanvas, Skia } from '@shopify/react-native-skia';
+import { PoseLandmarkType, type PoseLandmark } from 'vision-camera-pose-landmarks-plugin';
 
 const POSE_CONNECTIONS: [PoseLandmarkType, PoseLandmarkType][] = [
   // Face
@@ -56,18 +46,22 @@ const POSE_CONNECTIONS: [PoseLandmarkType, PoseLandmarkType][] = [
   [PoseLandmarkType.RIGHT_ANKLE, PoseLandmarkType.RIGHT_FOOT_INDEX],
 ];
 
-function drawLandmarks(frame: DrawableFrame, landmarks: PoseLandmark[]) {
+const blue = '#3567db';
+const darkblue = '#2a3a61ff';
+
+export function drawLandmarks(canvas: SkCanvas, landmarks: PoseLandmark[]) {
   'worklet';
 
   const landmarkMap = new Map<PoseLandmarkType, PoseLandmark>();
   const point = Skia.Paint();
   const line = Skia.Paint();
 
-  line.setColor(Skia.Color('lightblue'));
+  line.setColor(Skia.Color(darkblue));
   line.setStrokeWidth(2);
   line.setStyle(1);
 
-  point.setColor(Skia.Color('blue'));
+  point.setColor(Skia.Color(blue));
+  point.setStrokeWidth(3);
   point.setStyle(1);
 
   for (const landmark of landmarks) {
@@ -79,39 +73,10 @@ function drawLandmarks(frame: DrawableFrame, landmarks: PoseLandmark[]) {
     const endPoint = landmarkMap.get(end);
 
     if (startPoint && endPoint)
-      frame.drawLine(
-        startPoint.x * frame.width,
-        startPoint.y * frame.height,
-        endPoint.x * frame.width,
-        endPoint.y * frame.height,
-        line
-      );
+      canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, line);
   }
 
   for (const landmark of landmarks) {
-    frame.drawCircle(
-      landmark.x * frame.width,
-      landmark.y * frame.height,
-      15 * landmark.z * -1,
-      point
-    );
+    canvas.drawCircle(landmark.x, landmark.y, 10 * landmark.z * -1, point);
   }
 }
-
-// SurfaceCache type is private
-const surfaceHolder = Worklets.createSharedValue<any>({});
-const offscreenTextures = Worklets.createSharedValue<SkImage[]>([]);
-const previewOrientation = Worklets.createSharedValue<Orientation>('portrait');
-
-export const frameProcessor = createSkiaFrameProcessor(
-  (frame) => {
-    'worklet';
-    const landmarks = getPoseLandmarks(frame);
-
-    frame.render();
-    drawLandmarks(frame, landmarks);
-  },
-  surfaceHolder,
-  offscreenTextures,
-  previewOrientation
-);

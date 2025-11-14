@@ -19,6 +19,8 @@ This is a proof of concept project for pose detection using React Native and Vis
 - Pose landmarker heavy plugin hits performance hard. 7fps on iPhone seems to be the limit.
 - The position is in 3D!
 - use videoStabilizationMode="off" to reduce latency on iOS
+- Black screen on Android solved using read device
+- useSkiaFrameProcessor() causes crashes on iOS when combined with other frame processors better to use frame processor alone
 
 ### Runtime Comparison
 
