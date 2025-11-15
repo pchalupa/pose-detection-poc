@@ -1,6 +1,6 @@
 {
   "name": "vision-camera-pose-landmarks-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "description": "VisionCamera Frame Processor Plugin for Pose Landmarks",
   "bugs": {
