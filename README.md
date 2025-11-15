@@ -21,6 +21,7 @@ This is a proof of concept project for pose detection using React Native and Vis
 - use videoStabilizationMode="off" to reduce latency on iOS
 - Black screen on Android solved using read device
 - useSkiaFrameProcessor() causes crashes on iOS when combined with other frame processors better to use frame processor alone
+- Check https://github.com/google-ai-edge/mediapipe/blob/master/docs/solutions/holistic.md
 
 ### Runtime Comparison
 
