@@ -26,10 +26,22 @@ final class MediaPipeFrameProcessor {
             return nil
         }
     }()
+    
+    private let landmarkNames = [
+        "nose", "leftEyeInner", "leftEye", "leftEyeOuter",
+        "rightEyeInner", "rightEye", "rightEyeOuter", "leftEar",
+        "rightEar", "leftMouth", "rightMouth", "leftShoulder",
+        "rightShoulder", "leftElbow", "rightElbow", "leftWrist",
+        "rightWrist", "leftPinky", "rightPinky", "leftIndex",
+        "rightIndex", "leftThumb", "rightThumb", "leftHip",
+        "rightHip", "leftKnee", "rightKnee", "leftAnkle",
+        "rightAnkle", "leftHeel", "rightHeel", "leftFootIndex",
+        "rightFootIndex",
+    ]
 
-    func process(_ frame: Frame) -> [[String: Any]] {
+    func process(_ frame: Frame) -> [String: [String: Any]] {
         guard let poseLandmarker = poseLandmarker else {
-            return []
+            return [:]
         }
 
         do {
@@ -42,20 +54,27 @@ final class MediaPipeFrameProcessor {
                 timestampInMilliseconds: Int(frame.timestamp)
             )
             guard let firstPose = result.landmarks.first else {
-                return []
+                return [:]
             }
-            let landmarks = firstPose.enumerated().map { (index, landmark) in
-                [
+
+            let landmarks = firstPose.enumerated().reduce(
+                into: [String: [String: Any]]()
+            ) { result, item in
+                let (index, landmark) = item
+                let landmarkName = landmarkNames[index]
+                
+                result[landmarkName] = [
                     "x": landmark.x,
                     "y": landmark.y,
                     "z": landmark.z,
-                    "type": index,
+                    "visibilty": landmark.visibility?.doubleValue ?? 0.0,
+                    "presence": landmark.presence?.doubleValue ?? 0.0
                 ]
             }
 
             return landmarks
         } catch {
-            return []
+            return [:]
         }
     }
 }

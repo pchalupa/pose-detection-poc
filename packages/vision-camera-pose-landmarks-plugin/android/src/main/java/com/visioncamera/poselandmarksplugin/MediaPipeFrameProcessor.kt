@@ -26,23 +26,41 @@ class MediaPipeFrameProcessor(private val context: Context) {
             null
         }
     }
-    fun process(frame: Frame): List<Map<String, Any>> {
+
+    private val landmarkNames = listOf(
+        "nose", "leftEyeInner", "leftEye", "leftEyeOuter",
+        "rightEyeInner", "rightEye", "rightEyeOuter", "leftEar",
+        "rightEar", "leftMouth", "rightMouth", "leftShoulder",
+        "rightShoulder", "leftElbow", "rightElbow", "leftWrist",
+        "rightWrist", "leftPinky", "rightPinky", "leftIndex",
+        "rightIndex", "leftThumb", "rightThumb", "leftHip",
+        "rightHip", "leftKnee", "rightKnee", "leftAnkle",
+        "rightAnkle", "leftHeel", "rightHeel", "leftFootIndex",
+        "rightFootIndex"
+    )
+
+    fun process(frame: Frame): Map<String, Map<String, Any>> {
+        val poseLandmarker = poseLandmarker ?: return emptyMap()
+
         try {
             val mpImage = MediaImageBuilder(frame.image).build()
-            val result = poseLandmarker?.detectForVideo(mpImage, frame.timestamp)
-            val firstPose = result?.landmarks()?.first()
-            val landmarks = firstPose?.mapIndexed { index, landmark ->
-                mapOf(
+            val result = poseLandmarker.detectForVideo(mpImage, frame.timestamp)
+            val firstPose = result?.landmarks()?.firstOrNull() ?: return emptyMap()
+
+            val landmarks = firstPose.mapIndexed { index, landmark ->
+                val landmarkName = landmarkNames[index]
+                landmarkName to mapOf(
                     "x" to landmark.x().toDouble(),
                     "y" to landmark.y().toDouble(),
                     "z" to landmark.z().toDouble(),
-                    "type" to index
+                    "visibility" to (landmark.visibility().orElse(0.0f).toDouble()),
+                    "presence" to (landmark.presence().orElse(0.0f).toDouble())
                 )
-            } ?: emptyList()
+            }.toMap()
 
             return landmarks
         } catch (error: Exception) {
-            return emptyList()
+            return emptyMap()
         }
     }
 }
