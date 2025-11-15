@@ -10,18 +10,16 @@ import {
   useFrameProcessor,
 } from 'react-native-vision-camera';
 import { useSharedValue as useVisionCameraSharedValue } from 'react-native-worklets-core';
-import { usePoseLandmarksPlugin } from 'vision-camera-pose-landmarks-plugin';
+import { Landmarks, usePoseLandmarksPlugin } from 'vision-camera-pose-landmarks-plugin';
 import { Button } from '~/components/Button';
-import { drawLandmarks } from '~/frame-processor';
-
-type Landmark = { x: number; y: number; z: number; type: number };
+import { drawLandmarks } from '~/features/body-pose/frame-processor';
 
 export default function TabOneScreen() {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('front');
   const format = useCameraFormat(device, [{ videoResolution: { width: 640, height: 480 } }]);
   const picture = useSharedValue<SkPicture>(createPicture(() => {}));
-  const landmarks = useVisionCameraSharedValue<Landmark[]>([]);
+  const landmarks = useVisionCameraSharedValue<Landmarks>({});
   const { detectPoseLandmarks } = usePoseLandmarksPlugin();
 
   useFrameCallback(() => {
@@ -47,13 +45,12 @@ export default function TabOneScreen() {
       'worklet';
       const detectedLandmarks = detectPoseLandmarks(frame);
 
-      const scaledLandmarks = detectedLandmarks.map((landmark) => ({
-        ...landmark,
-        x: landmark.x * frame.width,
-        y: landmark.y * frame.height,
-      }));
+      for (let landmark in detectedLandmarks) {
+        detectedLandmarks[landmark].x = detectedLandmarks[landmark].x * frame.width;
+        detectedLandmarks[landmark].y = detectedLandmarks[landmark].y * frame.height;
+      }
 
-      landmarks.value = scaledLandmarks;
+      landmarks.value = detectedLandmarks;
     });
   }, []);
 
