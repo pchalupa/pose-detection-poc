@@ -52,8 +52,10 @@ const POSE_CONNECTIONS: [LandmarkName, LandmarkName][] = [
 
 const blue = '#3567db';
 const darkblue = '#2a3a61ff';
+const width = 1280 as const;
+const height = 720 as const;
 
-export function drawLandmarks(canvas: SkCanvas, landmarks: Landmarks) {
+export function drawLandmarks(canvas: SkCanvas, landmarks?: Landmarks) {
   'worklet';
 
   const landmarkMap = new Map<LandmarkName, Landmark>();
@@ -84,6 +86,27 @@ export function drawLandmarks(canvas: SkCanvas, landmarks: Landmarks) {
   for (const landmarkKey in landmarks) {
     const landmark = landmarkKey as LandmarkName;
     const { x, y, z } = landmarks[landmark];
-    canvas.drawCircle(x, y, 10 * z * -1, point);
+    canvas.drawCircle(x * 480, y * 640, 10 * z * -1, point);
+  }
+}
+
+export function rotateCanvas(canvas: SkCanvas, cameraOrientation: string) {
+  'worklet';
+
+  switch (cameraOrientation) {
+    case 'portrait':
+      break;
+    case 'landscape-left':
+      canvas.translate(0, width);
+      canvas.rotate(270, 0, 0);
+      break;
+    case 'landscape-right':
+      canvas.translate(height, 0);
+      canvas.rotate(90, 0, 0);
+      break;
+    case 'portrait-upside-down':
+      canvas.translate(width, height);
+      canvas.rotate(180, 0, 0);
+      break;
   }
 }
