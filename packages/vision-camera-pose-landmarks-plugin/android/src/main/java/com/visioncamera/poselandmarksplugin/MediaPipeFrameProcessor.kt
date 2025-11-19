@@ -39,7 +39,7 @@ class MediaPipeFrameProcessor(private val context: Context) {
         "rightFootIndex"
     )
 
-    fun process(frame: Frame): Map<String, Map<String, Any>> {
+    fun process(frame: Frame): Map<String, Map<String, Double>> {
         val poseLandmarker = poseLandmarker ?: return emptyMap()
 
         try {

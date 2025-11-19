@@ -26,7 +26,7 @@ final class MediaPipeFrameProcessor {
             return nil
         }
     }()
-    
+
     private let landmarkNames = [
         "nose", "leftEyeInner", "leftEye", "leftEyeOuter",
         "rightEyeInner", "rightEye", "rightEyeOuter", "leftEar",
@@ -39,7 +39,7 @@ final class MediaPipeFrameProcessor {
         "rightFootIndex",
     ]
 
-    func process(_ frame: Frame) -> [String: [String: Any]] {
+    func process(_ frame: Frame) -> [String: [String: Double]] {
         guard let poseLandmarker = poseLandmarker else {
             return [:]
         }
@@ -58,15 +58,15 @@ final class MediaPipeFrameProcessor {
             }
 
             let landmarks = firstPose.enumerated().reduce(
-                into: [String: [String: Any]]()
+                into: [String: [String: Double]]()
             ) { result, item in
                 let (index, landmark) = item
                 let landmarkName = landmarkNames[index]
-                
+
                 result[landmarkName] = [
-                    "x": landmark.x,
-                    "y": landmark.y,
-                    "z": landmark.z,
+                    "x": Double(landmark.x),
+                    "y": Double(landmark.y),
+                    "z": Double(landmark.z),
                     "visibilty": landmark.visibility?.doubleValue ?? 0.0,
                     "presence": landmark.presence?.doubleValue ?? 0.0
                 ]
