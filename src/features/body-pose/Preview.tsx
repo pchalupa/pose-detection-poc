@@ -1,57 +1,60 @@
-import { Canvas, Fill, Picture, Rect, SkPicture, createPicture } from '@shopify/react-native-skia';
-import { StyleSheet, View } from 'react-native';
-import { useFrameCallback, useSharedValue } from 'react-native-reanimated';
+import { Canvas, Picture, createPicture } from '@shopify/react-native-skia';
+import { StyleSheet, TextInput, View, ViewStyle } from 'react-native';
+import Animated, {
+  useAnimatedProps,
+  useDerivedValue,
+  useSharedValue,
+} from 'react-native-reanimated';
 import {
   Camera,
-  runAsync,
   useCameraDevice,
   useCameraFormat,
   useCameraPermission,
-  useFrameProcessor,
 } from 'react-native-vision-camera';
-import { useSharedValue as useVisionCameraSharedValue } from 'react-native-worklets-core';
-import { Landmarks, usePoseLandmarksPlugin } from 'vision-camera-pose-landmarks-plugin';
 import { Button } from '~/components/Button';
-import { drawLandmarks, rotateCanvas } from '~/features/body-pose/frame-processor';
+import { drawLandmarks } from './draw-landmarks';
+import { useLandmarksFrameProcessor } from './frame-processor';
+import { distanceBetween } from './pose-detector';
 
-export function Preview() {
+interface PreviewProps {
+  style?: ViewStyle;
+}
+
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
+
+export function Preview({ style }: PreviewProps) {
   const { width, height } = { width: 1280, height: 720 };
-  // Camera
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('front');
   const format = useCameraFormat(device, [{ videoResolution: { width, height } }]);
-  const cameraOrientation = useVisionCameraSharedValue<string>('portrait');
-  const landmarks = useVisionCameraSharedValue<Landmarks | undefined>(undefined);
-  const { detectPoseLandmarks } = usePoseLandmarksPlugin();
 
-  console.log(device?.sensorOrientation);
+  const { frameProcessor, landmarks } = useLandmarksFrameProcessor();
+  const layout = useSharedValue({ width: 0, height: 0 });
 
-  // Shared values
-  const picture = useSharedValue<SkPicture>(createPicture(() => {}));
+  const picture = useDerivedValue(() =>
+    createPicture((canvas) => drawLandmarks(canvas, layout, landmarks))
+  );
 
-  useFrameCallback((frame) => {
-    'worklet';
+  const distanceBetweenWrists = useDerivedValue(() => {
+    if (landmarks.value?.leftEar && landmarks.value?.rightEar) {
+      const earToEarSize = 16; // In cm
+      const scale =
+        earToEarSize / distanceBetween(landmarks.value?.leftEar, landmarks.value?.rightEar);
 
-    picture.value = createPicture((canvas) => {
-      rotateCanvas(canvas, cameraOrientation.value);
-      drawLandmarks(canvas, landmarks.value);
+      if (landmarks.value?.leftWrist && landmarks.value?.rightWrist) {
+        return distanceBetween(landmarks.value.leftWrist, landmarks.value.rightWrist) * scale;
+      }
+    }
 
-      return canvas;
-    });
+    return 0.0;
   });
 
-  const frameProcessor = useFrameProcessor((frame) => {
-    'worklet';
-
-    runAsync(frame, () => {
-      'worklet';
-
-      const detectedLandmarks = detectPoseLandmarks(frame);
-
-      landmarks.value = detectedLandmarks;
-      cameraOrientation.value = frame.orientation;
-    });
-  }, []);
+  const animatedProps = useAnimatedProps(() => {
+    return {
+      text: `${distanceBetweenWrists.value.toPrecision(2)} cm`,
+      defaultValue: '0.0 cm',
+    };
+  });
 
   if (!hasPermission || !device)
     return (
@@ -61,14 +64,16 @@ export function Preview() {
     );
 
   return (
-    <View
-      style={{
-        width,
-        height,
-        overflow: 'hidden',
-        backgroundColor: 'blue',
-      }}
-      onLayout={(layout) => console.log(layout.nativeEvent.layout)}
+    <Animated.View
+      style={[
+        style,
+        {
+          flex: 1,
+          overflow: 'hidden',
+          aspectRatio: 9 / 16,
+        },
+      ]}
+      onLayout={({ nativeEvent }) => (layout.value = nativeEvent.layout)}
     >
       <Camera
         device={device}
@@ -79,17 +84,18 @@ export function Preview() {
         pixelFormat="rgb"
         enableFpsGraph
         resizeMode="contain"
-        style={{ ...StyleSheet.absoluteFillObject, width, height }}
+        style={StyleSheet.absoluteFillObject}
       />
-      <Canvas
-        style={{ ...StyleSheet.absoluteFillObject, width, height }}
-        pointerEvents="none"
-        debug
-      >
-        <Rect x={0} y={0} width={50} height={50} color="red" />
-        <Fill color="black" opacity={0.4} />
+      <Canvas style={StyleSheet.absoluteFillObject}>
         <Picture picture={picture} />
       </Canvas>
-    </View>
+
+      <AnimatedTextInput
+        animatedProps={animatedProps}
+        style={{ color: 'red', left: '40%', top: '25%', fontSize: 32 }}
+        editable={false}
+        numberOfLines={1}
+      />
+    </Animated.View>
   );
 }
