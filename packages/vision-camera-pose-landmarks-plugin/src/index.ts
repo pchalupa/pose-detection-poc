@@ -82,3 +82,5 @@ export type Landmark = {
 
 /** Normalized coordinate value in the range of [0, 1]. */
 type NormalizedCoordinate = number;
+
+export type LandmarkName = keyof Landmarks;
