@@ -2,8 +2,11 @@ import { useMemo } from 'react';
 import { type Frame, VisionCameraProxy } from 'react-native-vision-camera';
 
 /** Get a new instance of the pose landmarks plugin. */
-export function createPoseLandmarksPlugin() {
-  const poseLandmarksPlugin = VisionCameraProxy.initFrameProcessorPlugin('detectPoseLandmarks', {});
+export function createPoseLandmarksPlugin(options: PluginOptions = {}) {
+  const poseLandmarksPlugin = VisionCameraProxy.initFrameProcessorPlugin(
+    'detectPoseLandmarks',
+    options
+  );
 
   if (poseLandmarksPlugin == null)
     throw new Error(
@@ -23,17 +26,41 @@ export function createPoseLandmarksPlugin() {
      * }, []);
      * ```
      */
-    detectPoseLandmarks: (frame: Frame): Landmarks => {
+    detectPoseLandmarks: (frame: Frame): Poses => {
       'worklet';
-      return (poseLandmarksPlugin.call(frame) as unknown as Landmarks) ?? {};
+      return (poseLandmarksPlugin.call(frame) as unknown as Poses) ?? [];
     },
   };
 }
 
 /** Use an instance of the pose landmarks plugin. */
-export function usePoseLandmarksPlugin() {
-  return useMemo(() => createPoseLandmarksPlugin(), []);
+export function usePoseLandmarksPlugin(options: PluginOptions = {}) {
+  return useMemo(() => createPoseLandmarksPlugin(options), [options]);
 }
+
+type PluginOptions = {
+  numPoses?: number;
+  /**
+   * Value between 0.0 and 1.0
+   *
+   * @default 0.5
+   * */
+  minTrackingConfidence?: number;
+  /**
+   * Value between 0.0 and 1.0
+   *
+   * @default 0.5
+   * */
+  minPosePresenceConfidence?: number;
+  /**
+   * Value between 0.0 and 1.0
+   *
+   * @default 0.5
+   * */
+  minPoseDetectionConfidence?: number;
+};
+
+type Poses = Landmarks[];
 
 export type Landmarks = {
   nose: Landmark;

@@ -7,20 +7,19 @@ import com.facebook.react.uimanager.ViewManager
 import com.mrousavy.camera.frameprocessors.FrameProcessorPluginRegistry
 
 class PoseLandmarksPackage : ReactPackage {
-
-  companion object {
-    init {
-      FrameProcessorPluginRegistry.addFrameProcessorPlugin(PoseLandmarksPlugin.NAME) { proxy, options ->
-          PoseLandmarksPlugin(proxy, options)
-      }
+    companion object {
+        init {
+            FrameProcessorPluginRegistry.addFrameProcessorPlugin(PoseLandmarksPlugin.NAME) { proxy, options ->
+                PoseLandmarksPlugin(proxy, options)
+            }
+        }
     }
-  }
 
-  override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-    return emptyList()
-  }
+    override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
+        return emptyList()
+    }
 
-  override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-    return emptyList()
-  }
+    override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
+        return emptyList()
+    }
 }

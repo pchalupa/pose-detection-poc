@@ -8,7 +8,12 @@ export function useLandmarksFrameProcessor() {
   const landmarks = useSharedValue<Landmarks | undefined>(undefined);
   /** Worklets Core shared value in the Vision Camera context */
   const result = useVisionCameraSharedValue<Landmarks | undefined>(undefined);
-  const { detectPoseLandmarks } = usePoseLandmarksPlugin();
+  const { detectPoseLandmarks } = usePoseLandmarksPlugin({
+    numPoses: 1,
+    minPoseDetectionConfidence: 0.9,
+    minPosePresenceConfidence: 1.0,
+    minTrackingConfidence: 1.0,
+  });
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
@@ -16,7 +21,7 @@ export function useLandmarksFrameProcessor() {
     runAsync(frame, () => {
       'worklet';
 
-      const detectedLandmarks = detectPoseLandmarks(frame);
+      const detectedLandmarks = detectPoseLandmarks(frame).at(0);
 
       for (const landmarkKey in detectedLandmarks) {
         const landmark = landmarkKey as keyof Landmarks;

@@ -7,26 +7,14 @@ import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.mrousavy.camera.frameprocessors.Frame
 
-class MediaPipeFrameProcessor(private val context: Context) {
-    private val poseLandmarker: PoseLandmarker? by lazy {
-        try {
-            val baseOptionsBuilder = BaseOptions.builder()
-                .setModelAssetPath("pose_landmarker_full.task")
-
-            val optionsBuilder = PoseLandmarker.PoseLandmarkerOptions.builder()
-                .setBaseOptions(baseOptionsBuilder.build())
-                .setRunningMode(RunningMode.VIDEO)
-                .setNumPoses(1)
-                .setMinPoseDetectionConfidence(0.5f)
-                .setMinPosePresenceConfidence(0.5f)
-                .setMinTrackingConfidence(0.5f)
-
-            PoseLandmarker.createFromOptions(context, optionsBuilder.build())
-        } catch (error: Exception) {
-            null
-        }
-    }
-
+class MediaPipeFrameProcessor(
+    private val context: Context,
+    modelPath: String?,
+    numPoses: Int?,
+    minTrackingConfidence: Float?,
+    minPosePresenceConfidence: Float?,
+    minPoseDetectionConfidence: Float?
+) {
     private val landmarkNames = listOf(
         "nose", "leftEyeInner", "leftEye", "leftEyeOuter",
         "rightEyeInner", "rightEye", "rightEyeOuter", "leftEar",
@@ -38,29 +26,49 @@ class MediaPipeFrameProcessor(private val context: Context) {
         "rightAnkle", "leftHeel", "rightHeel", "leftFootIndex",
         "rightFootIndex"
     )
+    private val poseLandmarkerOptions: PoseLandmarker.PoseLandmarkerOptions
+    private val poseLandmarker: PoseLandmarker? by lazy {
+        PoseLandmarker.createFromOptions(context, poseLandmarkerOptions)
+    }
 
-    fun process(frame: Frame): Map<String, Map<String, Double>> {
-        val poseLandmarker = poseLandmarker ?: return emptyMap()
+    init {
+        val optionsBuilder = PoseLandmarker.PoseLandmarkerOptions.builder()
+            .setRunningMode(RunningMode.VIDEO)
+
+        modelPath?.let {
+            val baseOptions = BaseOptions.builder()
+                .setModelAssetPath(it).build()
+
+            optionsBuilder.setBaseOptions(baseOptions)
+        }
+        numPoses?.let { optionsBuilder.setNumPoses(it) }
+        minPoseDetectionConfidence?.let { optionsBuilder.setMinPoseDetectionConfidence(it) }
+        minPosePresenceConfidence?.let { optionsBuilder.setMinPosePresenceConfidence(it) }
+        minTrackingConfidence?.let { optionsBuilder.setMinTrackingConfidence(it) }
+
+        poseLandmarkerOptions = optionsBuilder.build()
+    }
+
+    fun process(frame: Frame): List<Map<String, Map<String, Double>>> {
+        val poseLandmarker = poseLandmarker ?: return emptyList()
 
         try {
             val mpImage = MediaImageBuilder(frame.image).build()
             val result = poseLandmarker.detectForVideo(mpImage, frame.timestamp)
-            val firstPose = result?.landmarks()?.firstOrNull() ?: return emptyMap()
 
-            val landmarks = firstPose.mapIndexed { index, landmark ->
-                val landmarkName = landmarkNames[index]
-                landmarkName to mapOf(
-                    "x" to landmark.x().toDouble(),
-                    "y" to landmark.y().toDouble(),
-                    "z" to landmark.z().toDouble(),
-                    "visibility" to (landmark.visibility().orElse(0.0f).toDouble()),
-                    "presence" to (landmark.presence().orElse(0.0f).toDouble())
-                )
-            }.toMap()
-
-            return landmarks
+            return result?.landmarks()?.map { pose ->
+                pose.mapIndexed { index, landmark ->
+                    landmarkNames[index] to mapOf(
+                        "x" to landmark.x().toDouble(),
+                        "y" to landmark.y().toDouble(),
+                        "z" to landmark.z().toDouble(),
+                        "visibility" to (landmark.visibility().orElse(0.0f).toDouble()),
+                        "presence" to (landmark.presence().orElse(0.0f).toDouble())
+                    )
+                }.toMap()
+            } ?: emptyList()
         } catch (error: Exception) {
-            return emptyMap()
+            return emptyList()
         }
     }
 }

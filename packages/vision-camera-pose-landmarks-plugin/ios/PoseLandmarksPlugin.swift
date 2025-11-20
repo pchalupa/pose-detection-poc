@@ -2,21 +2,36 @@ import VisionCamera
 
 @objc(PoseLandmarksPlugin)
 public class PoseLandmarksPlugin: FrameProcessorPlugin {
-    private lazy var mediaPipeFrameProcessor = {
-        return MediaPipeFrameProcessor()
-    }()
+    private var mediaPipeFrameProcessor: MediaPipeFrameProcessor
 
-    public override init(
+    override public init(
         proxy: VisionCameraProxyHolder,
-        options: [AnyHashable: Any]! = [:]
+        options: [AnyHashable: Any]? = [:]
     ) {
+        let numPoses = options?["numPoses"] as? Int
+        let minPoseDetectionConfidence = options?["minPoseDetectionConfidence"] as? Float
+        let minPosePresenceConfidence = options?["minPosePresenceConfidence"] as? Float
+        let minTrackingConfidence = options?["minTrackingConfidence"] as? Float
+        let modelPath = Bundle.main.path(
+            forResource: "pose_landmarker_full",
+            ofType: "task"
+        )
+
+        mediaPipeFrameProcessor = MediaPipeFrameProcessor(
+            numPoses: numPoses,
+            modelPath: modelPath,
+            minTrackingConfidence: minTrackingConfidence,
+            minPosePresenceConfidence: minPosePresenceConfidence,
+            minPoseDetectionConfidence: minPoseDetectionConfidence
+        )
+
         super.init(proxy: proxy, options: options)
     }
 
-    public override func callback(
+    override public func callback(
         _ frame: Frame,
-        withArguments arguments: [AnyHashable: Any]?
+        withArguments _: [AnyHashable: Any]?
     ) -> Any {
-        return mediaPipeFrameProcessor.process(frame)
+        mediaPipeFrameProcessor.process(frame)
     }
 }

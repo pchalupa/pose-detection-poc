@@ -2,31 +2,6 @@ import MediaPipeTasksVision
 import VisionCamera
 
 final class MediaPipeFrameProcessor {
-    private lazy var poseLandmarker: PoseLandmarker? = {
-        guard
-            let modelPath = Bundle.main.path(
-                forResource: "pose_landmarker_full",
-                ofType: "task"
-            )
-        else {
-            return nil
-        }
-        let options = PoseLandmarkerOptions()
-
-        options.baseOptions.modelAssetPath = modelPath
-        options.runningMode = .video
-        options.numPoses = 1
-        options.minPoseDetectionConfidence = 0.5
-        options.minPosePresenceConfidence = 0.5
-        options.minTrackingConfidence = 0.5
-
-        do {
-            return try PoseLandmarker(options: options)
-        } catch {
-            return nil
-        }
-    }()
-
     private let landmarkNames = [
         "nose", "leftEyeInner", "leftEye", "leftEyeOuter",
         "rightEyeInner", "rightEye", "rightEyeOuter", "leftEar",
@@ -36,45 +11,77 @@ final class MediaPipeFrameProcessor {
         "rightIndex", "leftThumb", "rightThumb", "leftHip",
         "rightHip", "leftKnee", "rightKnee", "leftAnkle",
         "rightAnkle", "leftHeel", "rightHeel", "leftFootIndex",
-        "rightFootIndex",
+        "rightFootIndex"
     ]
+    private let poseLandmarkerOptions: PoseLandmarkerOptions
+    private lazy var poseLandmarker: PoseLandmarker? = {
+        do {
+            return try PoseLandmarker(options: self.poseLandmarkerOptions)
+        } catch {
+            return nil
+        }
+    }()
 
-    func process(_ frame: Frame) -> [String: [String: Double]] {
-        guard let poseLandmarker = poseLandmarker else {
-            return [:]
+    init(
+        numPoses: Int?,
+        modelPath: String?,
+        minTrackingConfidence: Float?,
+        minPosePresenceConfidence: Float?,
+        minPoseDetectionConfidence: Float?
+    ) {
+        poseLandmarkerOptions = PoseLandmarkerOptions()
+        poseLandmarkerOptions.runningMode = .video
+
+        if let numPoses {
+            poseLandmarkerOptions.numPoses = numPoses
         }
 
+        if let modelPath {
+            poseLandmarkerOptions.baseOptions.modelAssetPath = modelPath
+        }
+
+        if let minTrackingConfidence {
+            poseLandmarkerOptions.minTrackingConfidence = minTrackingConfidence
+        }
+
+        if let minPosePresenceConfidence {
+            poseLandmarkerOptions.minPosePresenceConfidence = minPosePresenceConfidence
+        }
+
+        if let minPoseDetectionConfidence {
+            poseLandmarkerOptions.minPoseDetectionConfidence = minPoseDetectionConfidence
+        }
+    }
+
+    func process(_ frame: Frame) -> [[String: [String: Double]]] {
         do {
             let image = try MPImage(
                 sampleBuffer: frame.buffer,
                 orientation: frame.orientation
             )
-            let result = try poseLandmarker.detect(
+            let result = try poseLandmarker?.detect(
                 videoFrame: image,
                 timestampInMilliseconds: Int(frame.timestamp)
             )
-            guard let firstPose = result.landmarks.first else {
-                return [:]
-            }
 
-            let landmarks = firstPose.enumerated().reduce(
-                into: [String: [String: Double]]()
-            ) { result, item in
-                let (index, landmark) = item
-                let landmarkName = landmarkNames[index]
+            return result?.landmarks.map { pose in
+                pose.enumerated().reduce(
+                    into: [String: [String: Double]]()
+                ) { result, item in
+                    let (index, landmark) = item
+                    let landmarkName = landmarkNames[index]
 
-                result[landmarkName] = [
-                    "x": Double(landmark.x),
-                    "y": Double(landmark.y),
-                    "z": Double(landmark.z),
-                    "visibilty": landmark.visibility?.doubleValue ?? 0.0,
-                    "presence": landmark.presence?.doubleValue ?? 0.0
-                ]
-            }
-
-            return landmarks
+                    result[landmarkName] = [
+                        "x": Double(landmark.x),
+                        "y": Double(landmark.y),
+                        "z": Double(landmark.z),
+                        "visibility": landmark.visibility?.doubleValue ?? 0.0,
+                        "presence": landmark.presence?.doubleValue ?? 0.0
+                    ]
+                }
+            } ?? []
         } catch {
-            return [:]
+            return []
         }
     }
 }
