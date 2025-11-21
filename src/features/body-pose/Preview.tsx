@@ -23,18 +23,15 @@ interface PreviewProps {
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 export function Preview({ style }: PreviewProps) {
-  const { width, height } = { width: 1280, height: 720 };
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('front');
-  const format = useCameraFormat(device, [{ videoResolution: { width, height } }]);
-
+  const format = useCameraFormat(device, [{ videoResolution: { width: 1280, height: 720 } }]);
   const { frameProcessor, landmarks } = useLandmarksFrameProcessor();
   const layout = useSharedValue({ width: 0, height: 0 });
 
   const picture = useDerivedValue(() =>
     createPicture((canvas) => drawLandmarks(canvas, layout, landmarks))
   );
-
   const distanceBetweenWrists = useDerivedValue(() => {
     if (landmarks.value?.leftEar && landmarks.value?.rightEar) {
       const earToEarSize = 16; // In cm
@@ -49,12 +46,10 @@ export function Preview({ style }: PreviewProps) {
     return 0.0;
   });
 
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      text: `${distanceBetweenWrists.value.toPrecision(2)} cm`,
-      defaultValue: '0.0 cm',
-    };
-  });
+  const animatedProps = useAnimatedProps(() => ({
+    text: `${distanceBetweenWrists.value.toPrecision(2)} cm`,
+    defaultValue: '0.0 cm',
+  }));
 
   if (!hasPermission || !device)
     return (
