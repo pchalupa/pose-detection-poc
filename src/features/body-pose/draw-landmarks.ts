@@ -55,7 +55,7 @@ const POSE_CONNECTIONS: [LandmarkName, LandmarkName][] = [
 export function drawLandmarks(
   canvas: SkCanvas,
   layout: SharedValue<{ width: number; height: number }>,
-  landmarks?: SharedValue<Landmarks | undefined>
+  landmarks?: SharedValue<Partial<Landmarks> | undefined>
 ) {
   'worklet';
 
