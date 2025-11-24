@@ -10,9 +10,9 @@ export function useLandmarksFrameProcessor() {
   const result = useVisionCameraSharedValue<Landmarks | undefined>(undefined);
   const { detectPoseLandmarks } = usePoseLandmarksPlugin({
     numPoses: 1,
-    minPoseDetectionConfidence: 0.9,
-    minPosePresenceConfidence: 1.0,
-    minTrackingConfidence: 1.0,
+    minPoseDetectionConfidence: 0.5,
+    minPosePresenceConfidence: 0.5,
+    minTrackingConfidence: 0.5,
   });
 
   const frameProcessor = useFrameProcessor((frame) => {

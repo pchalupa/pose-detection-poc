@@ -14,7 +14,7 @@ import {
 import { Button } from '~/components/Button';
 import { drawLandmarks } from './draw-landmarks';
 import { useLandmarksFrameProcessor } from './frame-processor';
-import { distanceBetween } from './pose-detector';
+import { angleBetween, distanceBetween, radiansToDegrees } from './utils';
 
 interface PreviewProps {
   style?: ViewStyle;
@@ -32,22 +32,42 @@ export function Preview({ style }: PreviewProps) {
   const picture = useDerivedValue(() =>
     createPicture((canvas) => drawLandmarks(canvas, layout, landmarks))
   );
-  const distanceBetweenWrists = useDerivedValue(() => {
-    if (landmarks.value?.leftEar && landmarks.value?.rightEar) {
-      const earToEarSize = 16; // In cm
-      const scale =
-        earToEarSize / distanceBetween(landmarks.value?.leftEar, landmarks.value?.rightEar);
 
-      if (landmarks.value?.leftWrist && landmarks.value?.rightWrist) {
-        return distanceBetween(landmarks.value.leftWrist, landmarks.value.rightWrist) * scale;
-      }
-    }
+  const scale = useDerivedValue(() => {
+    const estimatedEarToEarSize = 16; // In cm
+
+    if (landmarks.value?.leftEar && landmarks.value?.rightEar)
+      return (
+        estimatedEarToEarSize / distanceBetween(landmarks.value?.leftEar, landmarks.value?.rightEar)
+      );
+
+    return 1.0;
+  }, []);
+
+  const distanceBetweenWrists = useDerivedValue(() => {
+    if (landmarks.value?.leftWrist && landmarks.value?.rightWrist)
+      return distanceBetween(landmarks.value.leftWrist, landmarks.value.rightWrist) * scale.value;
 
     return 0.0;
   });
 
+  const leftHipElbowAngle = useDerivedValue(() => {
+    if (landmarks.value?.leftShoulder && landmarks.value?.leftHip && landmarks.value?.leftElbow)
+      return radiansToDegrees(
+        angleBetween(
+          landmarks.value?.leftHip,
+          landmarks.value?.leftElbow,
+          landmarks.value?.leftShoulder
+        )
+      );
+
+    return 0;
+  });
+
   const animatedProps = useAnimatedProps(() => ({
-    text: `${distanceBetweenWrists.value.toPrecision(2)} cm`,
+    text: `Dist: ${distanceBetweenWrists.value.toPrecision(
+      2
+    )} cm\nAngle: ${leftHipElbowAngle.value.toFixed(0)}°`,
     defaultValue: '0.0 cm',
   }));
 
@@ -89,7 +109,7 @@ export function Preview({ style }: PreviewProps) {
         animatedProps={animatedProps}
         style={{ color: 'red', left: '40%', top: '25%', fontSize: 32 }}
         editable={false}
-        numberOfLines={1}
+        multiline={true}
       />
     </Animated.View>
   );
